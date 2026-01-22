@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import Sidebar from '@/components/Sidebar';
 import {
   LineChart,
@@ -16,7 +18,17 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { TrendingUp, ShoppingCart, CreditCard, Activity, Sparkles } from 'lucide-react';
+import {
+  Activity,
+  ArrowUpRight,
+  ClipboardList,
+  CreditCard,
+  Mic,
+  ShoppingCart,
+  Sparkles,
+  TrendingUp,
+  UploadCloud,
+} from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -26,11 +38,7 @@ export default function Dashboard({ user, onLogout }) {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     setLoading(true);
     try {
       const [reportRes, analyticsRes] = await Promise.all([
@@ -44,7 +52,11 @@ export default function Dashboard({ user, onLogout }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user.user_id]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   if (loading) {
     return (
@@ -60,23 +72,103 @@ export default function Dashboard({ user, onLogout }) {
   return (
     <div className="flex h-screen bg-slate-50">
       <Sidebar user={user} onLogout={onLogout} />
-      
-      <main data-testid="dashboard-main" className="flex-1 overflow-y-auto p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1
-              className="text-4xl font-bold mb-2"
-              style={{ fontFamily: 'Outfit, sans-serif' }}
-            >
-              <span className="text-gradient">Dashboard</span>
-            </h1>
-            <p className="text-slate-600">
-              नमस्ते, {user.username}! आज का व्यवसाय सारांश | Today's Business Summary
-            </p>
-          </div>
+
+      <main data-testid="dashboard-main" className="flex-1 overflow-y-auto p-8 relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-28 -right-28 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
+          <div className="absolute top-1/3 -left-32 h-80 w-80 rounded-full bg-pink-200/40 blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto space-y-8">
+          <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-indigo-700 shadow-sm">
+                <Mic className="h-4 w-4" />
+                Live Voice Insights • OpenAI API + GPT-4o
+              </div>
+              <h1
+                className="text-4xl font-bold mt-3"
+                style={{ fontFamily: 'Outfit, sans-serif' }}
+              >
+                <span className="text-gradient">Dashboard</span>
+              </h1>
+              <p className="text-slate-600 mt-2">
+                नमस्ते, {user.username}! आज का व्यवसाय सारांश | Today's Business Summary
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <Button
+                asChild
+                className="h-11 rounded-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-pink-500 text-white shadow-lg shadow-indigo-500/30 transition-colors hover:from-indigo-500 hover:to-pink-600"
+              >
+                <Link to="/upload">
+                  <UploadCloud className="mr-2 h-4 w-4" />
+                  Upload Bills
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-11 rounded-full border-slate-200 bg-white/80 hover:bg-white"
+              >
+                <Link to="/entry">
+                  <ClipboardList className="mr-2 h-4 w-4" />
+                  Manual Entry
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                className="h-11 rounded-full border-slate-200 bg-white/80 hover:bg-white"
+              >
+                <Link to="/reports">
+                  View Reports
+                  <ArrowUpRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </header>
+
+          <Card className="glass-panel p-6 lg:p-8 relative overflow-hidden">
+            <div className="absolute -top-16 right-10 h-40 w-40 rounded-full bg-indigo-200/50 blur-2xl" />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-slate-700">
+                  <Sparkles className="h-4 w-4 text-indigo-600" />
+                  AI Daily Pulse
+                </div>
+                <h2
+                  className="text-2xl font-semibold mt-4"
+                  style={{ fontFamily: 'Outfit, sans-serif' }}
+                >
+                  Quick summary from today&apos;s transactions
+                </h2>
+                <p className="text-slate-600 mt-3 leading-relaxed">
+                  {report?.insights || 'Generating insights...'}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full lg:max-w-sm">
+                <div className="rounded-2xl bg-white/80 p-4 border border-white/60 shadow-sm">
+                  <p className="text-xs text-slate-500">Net Position</p>
+                  <p
+                    className="text-2xl font-bold text-indigo-600 mt-2"
+                    style={{ fontFamily: 'JetBrains Mono, monospace' }}
+                  >
+                    ₹{report?.net_amount?.toLocaleString('en-IN') || '0'}
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white/80 p-4 border border-white/60 shadow-sm">
+                  <p className="text-xs text-slate-500">Top Action</p>
+                  <p className="text-sm font-semibold text-slate-700 mt-2">
+                    {report?.action_points?.[0] || 'Awaiting recommendations'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card data-testid="sales-card" className="glass-card p-6 border-l-4 border-l-green-500">
               <div className="flex items-center justify-between">
                 <div>
@@ -134,12 +226,101 @@ export default function Dashboard({ user, onLogout }) {
             </Card>
           </div>
 
+          {/* Infographics */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Card className="glass-card p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Cashflow Health</p>
+                  <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Weekly Stability
+                  </h3>
+                </div>
+                <span className="text-sm font-semibold text-green-600">78%</span>
+              </div>
+              <Progress value={78} className="h-2 bg-green-100 [&>div]:bg-green-500" />
+              <div className="mt-5 space-y-3 text-sm text-slate-600">
+                <div className="flex items-center justify-between">
+                  <span>Receivables cleared</span>
+                  <span className="font-semibold text-slate-800">₹{report?.sales_total?.toLocaleString('en-IN') || '0'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Expense ratio</span>
+                  <span className="font-semibold text-slate-800">32%</span>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="glass-card p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Voice Adoption</p>
+                  <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Team Voice Usage
+                  </h3>
+                </div>
+                <span className="text-sm font-semibold text-indigo-600">62%</span>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                    <span>Hindi voice notes</span>
+                    <span className="font-semibold text-slate-800">44%</span>
+                  </div>
+                  <Progress value={44} className="h-2 bg-indigo-100 [&>div]:bg-indigo-500" />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                    <span>English voice notes</span>
+                    <span className="font-semibold text-slate-800">18%</span>
+                  </div>
+                  <Progress value={18} className="h-2 bg-indigo-100 [&>div]:bg-indigo-500" />
+                </div>
+                <div className="rounded-2xl bg-indigo-50/60 px-4 py-3 text-xs font-semibold text-indigo-700">
+                  GPT-4o Voice summarises in under 30 seconds.
+                </div>
+              </div>
+            </Card>
+
+            <Card className="glass-card p-6">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Category Mix</p>
+                  <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    Top Drivers Today
+                  </h3>
+                </div>
+                <span className="text-sm font-semibold text-orange-600">5 segments</span>
+              </div>
+              <div className="space-y-4">
+                {[
+                  { label: 'Retail Sales', value: '42%', color: 'bg-orange-500' },
+                  { label: 'Wholesale', value: '28%', color: 'bg-indigo-500' },
+                  { label: 'Subscriptions', value: '18%', color: 'bg-green-500' },
+                ].map((item) => (
+                  <div key={item.label}>
+                    <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                      <span>{item.label}</span>
+                      <span className="font-semibold text-slate-800">{item.value}</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className={`h-full ${item.color}`} style={{ width: item.value }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </div>
+
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card data-testid="trend-chart" className="glass-card p-6">
-              <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                7 Days Trend
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  7 Days Trend
+                </h3>
+                <span className="text-xs text-slate-500">Updated daily</span>
+              </div>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={analytics?.chart_data || []}>
                   <defs>
@@ -187,9 +368,12 @@ export default function Dashboard({ user, onLogout }) {
             </Card>
 
             <Card data-testid="comparison-chart" className="glass-card p-6">
-              <h3 className="text-xl font-semibold mb-4" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                Category Comparison
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-semibold" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Category Comparison
+                </h3>
+                <span className="text-xs text-slate-500">Today</span>
+              </div>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   data={[
@@ -222,7 +406,7 @@ export default function Dashboard({ user, onLogout }) {
           </div>
 
           {/* Insights & Action Points */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-6">
             <Card data-testid="insights-card" className="glass-card p-6 border-t-4 border-t-indigo-500">
               <div className="flex items-center mb-4">
                 <Sparkles className="h-6 w-6 text-indigo-600 mr-2" />
