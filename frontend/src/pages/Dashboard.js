@@ -11,6 +11,9 @@ import {
   Line,
   BarChart,
   Bar,
+  PieChart,
+  Pie,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -21,13 +24,17 @@ import {
 import {
   Activity,
   ArrowUpRight,
+  Boxes,
   ClipboardList,
   CreditCard,
+  FileText,
   Mic,
+  PhoneCall,
   ShoppingCart,
   Sparkles,
   TrendingUp,
   UploadCloud,
+  Users,
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -233,7 +240,7 @@ export default function Dashboard({ user, onLogout }) {
                 <div>
                   <p className="text-xs uppercase tracking-wide text-slate-500">Cashflow Health</p>
                   <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    Weekly Stability
+                    साप्ताहिक स्थिरता
                   </h3>
                 </div>
                 <span className="text-sm font-semibold text-green-600">78%</span>
@@ -241,11 +248,11 @@ export default function Dashboard({ user, onLogout }) {
               <Progress value={78} className="h-2 bg-green-100 [&>div]:bg-green-500" />
               <div className="mt-5 space-y-3 text-sm text-slate-600">
                 <div className="flex items-center justify-between">
-                  <span>Receivables cleared</span>
+                  <span>कलेक्शन क्लियर</span>
                   <span className="font-semibold text-slate-800">₹{report?.sales_total?.toLocaleString('en-IN') || '0'}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Expense ratio</span>
+                  <span>खर्च अनुपात</span>
                   <span className="font-semibold text-slate-800">32%</span>
                 </div>
               </div>
@@ -256,7 +263,7 @@ export default function Dashboard({ user, onLogout }) {
                 <div>
                   <p className="text-xs uppercase tracking-wide text-slate-500">Voice Adoption</p>
                   <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    Team Voice Usage
+                    टीम वॉइस उपयोग
                   </h3>
                 </div>
                 <span className="text-sm font-semibold text-indigo-600">62%</span>
@@ -277,7 +284,7 @@ export default function Dashboard({ user, onLogout }) {
                   <Progress value={18} className="h-2 bg-indigo-100 [&>div]:bg-indigo-500" />
                 </div>
                 <div className="rounded-2xl bg-indigo-50/60 px-4 py-3 text-xs font-semibold text-indigo-700">
-                  GPT-4o Voice summarises in under 30 seconds.
+                  GPT-4o Voice 30 सेकंड में सारांश देता है।
                 </div>
               </div>
             </Card>
@@ -287,7 +294,7 @@ export default function Dashboard({ user, onLogout }) {
                 <div>
                   <p className="text-xs uppercase tracking-wide text-slate-500">Category Mix</p>
                   <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    Top Drivers Today
+                    आज के शीर्ष ड्राइवर्स
                   </h3>
                 </div>
                 <span className="text-sm font-semibold text-orange-600">5 segments</span>
@@ -311,6 +318,198 @@ export default function Dashboard({ user, onLogout }) {
               </div>
             </Card>
           </div>
+
+          {/* CRM, Accounting, Inventory */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6">
+            <Card className="glass-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Basic CRM</p>
+                  <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                    संपर्क, फॉलो-अप और पाइपलाइन
+                  </h3>
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                  <PhoneCall className="h-4 w-4" />
+                  Live Follow-ups
+                </div>
+              </div>
+              <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+                <div className="space-y-4">
+                  {[
+                    { stage: 'नया लीड', count: 18, percent: 60, color: 'bg-indigo-500' },
+                    { stage: 'डेमो/मीटिंग', count: 11, percent: 45, color: 'bg-blue-500' },
+                    { stage: 'प्रपोज़ल', count: 7, percent: 35, color: 'bg-orange-500' },
+                    { stage: 'जीता हुआ', count: 5, percent: 25, color: 'bg-emerald-500' },
+                  ].map((item) => (
+                    <div key={item.stage}>
+                      <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                        <span>{item.stage}</span>
+                        <span className="font-semibold text-slate-800">{item.count}</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div className={`h-full ${item.color}`} style={{ width: `${item.percent}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-2xl bg-slate-50/80 border border-slate-100 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                    <Users className="h-4 w-4 text-indigo-600" />
+                    आज के फॉलो-अप
+                  </div>
+                  <div className="mt-4 space-y-3 text-sm text-slate-600">
+                    {[
+                      { name: 'Rakesh Traders', time: '11:00 AM', note: 'कोटेशन शेयर करना है' },
+                      { name: 'Shree Auto', time: '02:30 PM', note: 'पेमेंट रिमाइंडर' },
+                      { name: 'Asha Retail', time: '04:15 PM', note: 'डेमो फीडबैक' },
+                    ].map((item) => (
+                      <div key={item.name} className="rounded-xl bg-white p-3 shadow-sm border border-slate-100">
+                        <p className="font-semibold text-slate-800">{item.name}</p>
+                        <p className="text-xs text-slate-500">{item.time} • {item.note}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <div className="grid gap-6">
+              <Card className="glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Basic Accounting</p>
+                    <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      इनवॉइस, भुगतान, खर्च
+                    </h3>
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+                    <FileText className="h-4 w-4" />
+                    GST + Non-GST
+                  </div>
+                </div>
+                <div className="space-y-4 text-sm text-slate-600">
+                  <div className="flex items-center justify-between">
+                    <span>कुल इनवॉइस</span>
+                    <span className="font-semibold text-slate-800">₹{report?.sales_total?.toLocaleString('en-IN') || '0'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>भुगतान प्राप्त</span>
+                    <span className="font-semibold text-slate-800">₹{report?.purchase_total?.toLocaleString('en-IN') || '0'}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>खर्च</span>
+                    <span className="font-semibold text-slate-800">₹{report?.expense_total?.toLocaleString('en-IN') || '0'}</span>
+                  </div>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold">
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">GST Ready</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">Non-GST Bills</span>
+                </div>
+              </Card>
+
+              <Card className="glass-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Inventory</p>
+                    <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                      स्टॉक इन/आउट और अलर्ट
+                    </h3>
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700">
+                    <Boxes className="h-4 w-4" />
+                    Hindi AI Voice Agent
+                  </div>
+                </div>
+                <div className="space-y-3 text-sm text-slate-600">
+                  {[
+                    { item: 'LED Bulbs', qty: '120 units', status: 'Stock In' },
+                    { item: 'POS Paper Roll', qty: '45 units', status: 'Low Stock' },
+                    { item: 'Dry Snacks', qty: '30 units', status: 'Stock Out' },
+                  ].map((row) => (
+                    <div key={row.item} className="flex items-center justify-between rounded-xl bg-white p-3 shadow-sm border border-slate-100">
+                      <div>
+                        <p className="font-semibold text-slate-800">{row.item}</p>
+                        <p className="text-xs text-slate-500">{row.qty}</p>
+                      </div>
+                      <span className="text-xs font-semibold text-slate-700">{row.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            </div>
+          </div>
+
+          <Card className="glass-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-wide text-slate-500">Customer Pulse</p>
+                <h3 className="text-xl font-semibold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  संतुष्टि और ट्रैफिक
+                </h3>
+              </div>
+              <div className="text-xs text-slate-500">आज का स्नैपशॉट</div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between text-sm text-slate-600">
+                  <span>ट्रैफिक स्रोत</span>
+                  <span className="text-xs text-slate-500">आज</span>
+                </div>
+                <ResponsiveContainer width="100%" height={220}>
+                  <BarChart
+                    data={[
+                      { name: 'Direct', value: 320 },
+                      { name: 'Social', value: 460 },
+                      { name: 'Search', value: 610 },
+                      { name: 'Referral', value: 280 },
+                    ]}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                    <XAxis dataKey="name" stroke="#64748b" style={{ fontSize: '12px' }} />
+                    <YAxis stroke="#64748b" style={{ fontSize: '12px' }} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        border: 'none',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                      }}
+                    />
+                    <Bar dataKey="value" fill="#4f46e5" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="rounded-2xl bg-slate-50/80 border border-slate-100 p-6 flex flex-col items-center justify-center">
+                <div className="relative h-40 w-40">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Satisfied', value: 92 },
+                          { name: 'Neutral', value: 8 },
+                        ]}
+                        innerRadius={55}
+                        outerRadius={70}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        <Cell fill="#4f46e5" />
+                        <Cell fill="#e2e8f0" />
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <p className="text-3xl font-semibold text-slate-900">92%</p>
+                    <p className="text-xs text-slate-500">संतुष्टि</p>
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-slate-600 text-center">
+                  ग्राहक अनुभव स्कोर पिछले हफ्ते से +6% बेहतर है।
+                </p>
+              </div>
+            </div>
+          </Card>
 
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
