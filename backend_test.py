@@ -113,26 +113,26 @@ class SudarshanAPITester:
             print("❌ No user_id available for transaction test")
             return False
             
-        transaction_data = {
+        # The API expects mixed content: JSON body + form field
+        # Let's use multipart form data with JSON string
+        transaction_json = json.dumps({
             "category": "sales",
             "amount": 1000.0,
             "description": "Test sales transaction"
-        }
+        })
         
-        # Using form data as per API specification
         form_data = {
-            "user_id": self.user_id,
-            "category": transaction_data["category"],
-            "amount": str(transaction_data["amount"]),
-            "description": transaction_data["description"]
+            "transaction": transaction_json,
+            "user_id": self.user_id
         }
         
         success, response = self.run_test(
-            "Create Transaction",
+            "Create Transaction (Form)",
             "POST",
             "transactions",
             200,
-            data=form_data
+            data=form_data,
+            files={}  # This forces multipart form data
         )
         return success
 
