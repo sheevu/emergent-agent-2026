@@ -24,26 +24,29 @@ export default function Sidebar({ user, onLogout }) {
   return (
     <aside
       data-testid="sidebar"
-      className="w-72 bg-white border-r border-slate-200 flex flex-col"
+      className="w-72 bg-white/80 backdrop-blur-xl border-r border-white/40 shadow-sm flex flex-col"
     >
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center mb-4">
-          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center mr-3">
+      <div className="p-6 border-b border-white/60">
+        <div className="flex items-center mb-5">
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-pink-500 flex items-center justify-center mr-3 shadow-lg shadow-indigo-500/30">
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
             <h2
-              className="text-xl font-bold"
+              className="text-xl font-bold leading-tight"
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
               <span className="text-gradient">Sudarshan AI</span>
             </h2>
-            <p className="text-xs text-slate-500">Business Portal</p>
+            <p className="text-xs text-slate-500">Voice Insight Hub</p>
           </div>
         </div>
-        <div className="bg-slate-50 rounded-xl p-3">
-          <p className="text-sm font-medium text-slate-700">{user.username}</p>
+        <div className="bg-white/80 rounded-2xl p-4 border border-slate-100 shadow-sm">
+          <p className="text-sm font-semibold text-slate-700">{user.username}</p>
           <p className="text-xs text-slate-500">{user.email}</p>
+          <div className="mt-3 inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-[10px] font-semibold text-indigo-700">
+            Live Insights Enabled
+          </div>
         </div>
       </div>
 
@@ -57,10 +60,10 @@ export default function Sidebar({ user, onLogout }) {
                 <Link
                   to={item.path}
                   data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
-                  className={`flex items-center px-4 py-3 rounded-xl transition-all ${
+                  className={`flex items-center px-4 py-3 rounded-2xl transition-colors ${
                     isActive
-                      ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-500/30'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-indigo-600'
+                      ? 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-pink-500 text-white shadow-lg shadow-indigo-500/30'
+                      : 'text-slate-600 hover:bg-white hover:text-indigo-600'
                   }`}
                 >
                   <Icon className={`h-5 w-5 mr-3 ${isActive ? '' : 'text-slate-500'}`} />
@@ -77,12 +80,12 @@ export default function Sidebar({ user, onLogout }) {
         </ul>
       </nav>
 
-      <div className="p-4 border-t border-slate-200">
+      <div className="p-4 border-t border-white/60">
         <Button
           data-testid="logout-button"
           onClick={onLogout}
           variant="outline"
-          className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-xl"
+          className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 rounded-2xl"
         >
           <LogOut className="h-5 w-5 mr-3" />
           Logout
