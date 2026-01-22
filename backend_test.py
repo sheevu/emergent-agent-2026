@@ -27,7 +27,8 @@ class SudarshanAPITester:
             if method == 'GET':
                 response = requests.get(url, headers=headers, timeout=30)
             elif method == 'POST':
-                if files:
+                if files is not None:
+                    # Multipart form data - don't set Content-Type, let requests handle it
                     response = requests.post(url, data=data, files=files, timeout=30)
                 else:
                     headers['Content-Type'] = 'application/json'
