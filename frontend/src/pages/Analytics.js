@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import Sidebar from '@/components/Sidebar';
@@ -23,11 +23,7 @@ export default function Analytics({ user, onLogout }) {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/analytics/${user.user_id}?days=30`);
       setAnalytics(response.data);
@@ -36,7 +32,11 @@ export default function Analytics({ user, onLogout }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user.user_id]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   if (loading) {
     return (
