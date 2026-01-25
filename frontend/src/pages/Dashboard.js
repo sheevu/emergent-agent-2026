@@ -19,9 +19,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { TrendingUp, ShoppingCart, CreditCard, Activity, Sparkles } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE_URL;
 
 export default function Dashboard({ user, onLogout }) {
   const [report, setReport] = useState(null);
