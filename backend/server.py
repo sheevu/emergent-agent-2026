@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import FastAPI, APIRouter, HTTPException, UploadFile, File, Form, Body, Query
 from fastapi.responses import StreamingResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -58,6 +58,9 @@ class TransactionCreate(BaseModel):
     amount: float
     description: Optional[str] = None
     date: Optional[datetime] = None
+
+class TransactionCreatePayload(TransactionCreate):
+    user_id: Optional[str] = None
 
 class DailyReport(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -119,12 +122,39 @@ async def login(credentials: UserLogin):
     }
 
 @api_router.post("/transactions")
-async def create_transaction(transaction: TransactionCreate, user_id: str = Form(...)):
-    trans_data = transaction.model_dump()
+async def create_transaction(
+    transaction: Optional[TransactionCreatePayload] = Body(None),
+    user_id: Optional[str] = Form(None),
+    category: Optional[str] = Form(None),
+    amount: Optional[float] = Form(None),
+    description: Optional[str] = Form(None),
+    date: Optional[str] = Form(None),
+    user_id_query: Optional[str] = Query(None),
+):
+    final_user_id = user_id or user_id_query or (transaction.user_id if transaction else None)
+    if not final_user_id:
+        raise HTTPException(status_code=400, detail="user_id is required")
+
+    if transaction:
+        trans_data = transaction.model_dump(exclude={"user_id"})
+    else:
+        if category is None or amount is None:
+            raise HTTPException(status_code=400, detail="category and amount are required")
+        trans_data = {
+            "category": category,
+            "amount": amount,
+            "description": description,
+        }
+        if date:
+            try:
+                trans_data["date"] = datetime.fromisoformat(date)
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail="Invalid date format") from exc
+
     if not trans_data.get('date'):
         trans_data['date'] = datetime.now(timezone.utc)
-    
-    trans_obj = Transaction(user_id=user_id, **trans_data)
+
+    trans_obj = Transaction(user_id=final_user_id, **trans_data)
     doc = trans_obj.model_dump()
     doc['date'] = doc['date'].isoformat()
     doc['created_at'] = doc['created_at'].isoformat()

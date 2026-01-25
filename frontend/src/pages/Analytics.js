@@ -15,9 +15,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { BarChart3, TrendingUp, PieChart } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE_URL;
 
 export default function Analytics({ user, onLogout }) {
   const [analytics, setAnalytics] = useState(null);

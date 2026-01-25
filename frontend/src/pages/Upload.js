@@ -5,9 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Sidebar from '@/components/Sidebar';
 import { Upload as UploadIcon, FileText, Loader2, CheckCircle } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE_URL;
 
 export default function Upload({ user, onLogout }) {
   const [file, setFile] = useState(null);

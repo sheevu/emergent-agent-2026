@@ -3,9 +3,9 @@ import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import Sidebar from '@/components/Sidebar';
 import { Calendar, TrendingUp, FileText } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE_URL;
 
 export default function Reports({ user, onLogout }) {
   const [reports, setReports] = useState([]);
