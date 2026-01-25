@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Card } from '@/components/ui/card';
 import Sidebar from '@/components/Sidebar';
@@ -11,11 +11,7 @@ export default function Reports({ user, onLogout }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchReports();
-  }, []);
-
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/reports/${user.user_id}?limit=10`);
       setReports(response.data);
@@ -24,7 +20,11 @@ export default function Reports({ user, onLogout }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user.user_id]);
+
+  useEffect(() => {
+    fetchReports();
+  }, [fetchReports]);
 
   if (loading) {
     return (
