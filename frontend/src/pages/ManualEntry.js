@@ -8,9 +8,9 @@ import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Sidebar from '@/components/Sidebar';
 import { Save, Plus } from 'lucide-react';
+import { API_BASE_URL } from '@/lib/api';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+const API = API_BASE_URL;
 
 export default function ManualEntry({ user, onLogout }) {
   const [formData, setFormData] = useState({
@@ -28,13 +28,13 @@ export default function ManualEntry({ user, onLogout }) {
       const data = new FormData();
       data.append('user_id', user.user_id);
       data.append('category', formData.category);
-      data.append('amount', formData.amount);
-      data.append('description', formData.description);
+      data.append('amount', String(parseFloat(formData.amount)));
+      if (formData.description) {
+        data.append('description', formData.description);
+      }
 
-      await axios.post(`${API}/transactions?user_id=${user.user_id}`, {
-        category: formData.category,
-        amount: parseFloat(formData.amount),
-        description: formData.description,
+      await axios.post(`${API}/transactions`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       toast.success('डेटा सेव हो गया! Entry saved successfully!');
