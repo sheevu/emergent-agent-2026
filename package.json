@@ -1,0 +1,13 @@
+{
+  "name": "emergent-agent-2026",
+  "private": true,
+  "workspaces": [
+    "frontend"
+  ],
+  "scripts": {
+    "build": "yarn workspace frontend build",
+    "start": "yarn workspace frontend start",
+    "test": "yarn workspace frontend test"
+  },
+  "packageManager": "yarn@4.12.0"
+}
